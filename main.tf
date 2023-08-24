@@ -8,7 +8,7 @@ locals {
  */
 resource "aws_cloudwatch_log_group" "cw_b2_fsbackup" {
   name              = local.app_name_and_env
-  retention_in_days = 14
+  retention_in_days = 45
 
   tags = {
     name = "cloudwatch_log_group-${local.name_tag_suffix}"
@@ -18,8 +18,12 @@ resource "aws_cloudwatch_log_group" "cw_b2_fsbackup" {
 /*
  * Create required passwords
  */
-resource "random_id" "b2_repo_password" {
-  byte_length = 16
+resource "random_password" "b2_repo_password" {
+  length  = 32
+  lower   = true
+  numeric = true
+  special = true
+  upper   = true
 }
 
 /*
@@ -36,7 +40,7 @@ locals {
       backup_args           = var.b2_fsbackup_args
       forget_args           = var.b2_fsbackup_forget_args
       restic_host           = var.b2_fsbackup_host
-      repo_pw               = random_id.b2_repo_password.hex
+      repo_pw               = random_password.b2_repo_password.result
       repo_string           = var.repo_string
       restic_tag            = "${local.app_name_and_env}-b2-fs-backup"
       source_path           = var.backup_path
@@ -98,7 +102,7 @@ resource "aws_iam_role_policy" "ecs_events_run_task_with_any_role" {
         {
             "Effect": "Allow",
             "Action": "ecs:RunTask",
-            "Resource": "${replace(aws_ecs_task_definition.b2_fstd.arn, "/:\\d+$/", ":*")}"
+            "Resource": "${aws_ecs_task_definition.b2_fstd.arn_without_revision}:*"
         }
     ]
 }
