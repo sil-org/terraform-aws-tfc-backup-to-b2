@@ -8,7 +8,7 @@ locals {
  */
 resource "aws_cloudwatch_log_group" "cw_b2_fsbackup" {
   name              = local.app_name_and_env
-  retention_in_days = 45
+  retention_in_days = 60
 
   tags = {
     name = "cloudwatch_log_group-${local.name_tag_suffix}"
