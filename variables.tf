@@ -13,6 +13,12 @@ variable "app_name" {
   type = string
 }
 
+variable "aws_region" {
+  description = "AWS region to run in (e.g., us-east-1)"
+  default     = ""
+  type        = string
+}
+
 variable "backup_path" {
   type = string
   default = "/tmp/tfcbackup"
