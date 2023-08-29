@@ -33,6 +33,7 @@ locals {
   task_def = templatefile("${path.module}/task-definition-b2-backup.tftpl",
     {
       atlas_token           = var.tfc_access_token
+      aws_region            = var.aws_region
       b2_account_id         = var.b2_application_key_id
       b2_account_key        = var.b2_application_key
       fsbackup_mode         = var.b2_fsbackup_mode
